@@ -1,5 +1,5 @@
 # Team *JSY-ACE*
-CSE545 - Software Security - ASU Fall 2021
+CSE545 - Software Security - ASU Spring 2021
 
 Members:
 1. Chao Wan, cwan13@asu.edu
