@@ -6,16 +6,11 @@ import signal
 import sys
 import time
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--interface', help = 'The interface that detector listen on it, default is loopback')
-parser.add_argument('-p', '--ssh-port', help = 'SSH port, default is 22')
-
-
-args = parser.parse_args()
-
-SSH_PORT           = args.ssh_port or "22"
-LOCAL_INTERFACE    = args.interface or  get_if_list()[0]
-
+def get_argument():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-i', '--interface', help = 'The interface that detector listen on it, default is loopback')
+  parser.add_argument('-p', '--ssh-port', help = 'SSH port, default is 22')
+  return parser.parse_args()
 
 def signal_handler(sig, frame):
     print('Exit gracefully')
@@ -33,6 +28,9 @@ def sniff_ssh():
 
 
 if __name__ == "__main__":
+  args = get_argument()
+  SSH_PORT           = args.ssh_port or "22"
+  LOCAL_INTERFACE    = args.interface or  get_if_list()[0]
   signal.signal(signal.SIGINT, signal_handler)
   thread_parser_ssh = threading.Thread(target=sniff_ssh, args=())
 
