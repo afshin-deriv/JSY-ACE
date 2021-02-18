@@ -15,6 +15,8 @@ Members:
   Simple python script to submit list of stolen flags in the CTF game to the Team Interface 
   #### Usage
   ```
+  $ git clone git@github.com:afshinpaydar-binary/JSY-ACE.git
+  $ cd JSY-ACE/Submit_Flags
   $ make
   $ bin/submit_flag -h
     Usage: submit_flag [options]
@@ -44,4 +46,8 @@ Members:
   ['alreadysubmitted:correct']
   ['alreadysubmitted:incorrect']
   ['alreadysubmitted:incorrect']
+  ```
+  #### Clean UP
+  ```
+  $ make clean
   ```
