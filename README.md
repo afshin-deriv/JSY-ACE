@@ -10,9 +10,10 @@ Members:
 6. Afshin Paydar, apaydar@asu.edu
 
 ## Our Tools
-1. submit_flag
+## 1. submit_flag
   #### Description
-  Simple python script to submit list of stolen flags in the CTF game to the Team Interface 
+  Simple python script to submit list of stolen flags from file to the Team Interface in the CTF game.
+  the input file must contains a flag in each line.  
   #### Usage
   ```
   $ git clone git@github.com:afshinpaydar-binary/JSY-ACE.git
@@ -35,17 +36,9 @@ Members:
   #### Sample Output
   ```
   $ ./bin/submit_flag -i 52.52.83.248 -t pc9Zhk3DDDV9Y5ILrUs2 -f flags.txt
-  ['alreadysubmitted:correct']
+  ['correct']
   ['alreadysubmitted:incorrect']
   ['alreadysubmitted:correct']
-  ['alreadysubmitted:incorrect']
-  ['alreadysubmitted:correct']
-  ['alreadysubmitted:incorrect']
-  ['alreadysubmitted:correct']
-  ['alreadysubmitted:incorrect']
-  ['alreadysubmitted:correct']
-  ['alreadysubmitted:incorrect']
-  ['alreadysubmitted:incorrect']
   ```
   #### Clean UP
   ```
