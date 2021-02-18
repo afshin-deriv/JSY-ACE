@@ -12,5 +12,5 @@ all:
 
 
 clean:
-	rm -f $(TARGET) $(DST)
+	rm -rf $(TARGET) $(DST)
 .PHONY: clean
