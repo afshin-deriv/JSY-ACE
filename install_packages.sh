@@ -1,5 +1,5 @@
-apt-get update -y
-apt-get install -y nmap tcpdump socat netcat curl gdb automake strace ltrace
+sudo apt-get update -y
+sudo apt-get install -y nmap tcpdump socat netcat curl gdb automake strace ltrace jq hping3
 
 #XOCopy: http://reverse.lostrealm.com/tools/xocopy.html
 wget http://reverse.lostrealm.com/tools/xocopy.c
