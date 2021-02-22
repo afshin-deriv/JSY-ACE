@@ -44,3 +44,43 @@ Members:
   ```
   $ make clean
   ```
+  ![Redirector](images/Redirector.png?raw=true "Redirector diagram")
+  ## 2. Redirector
+  #### Description
+  The goal of this tool is to hide our IP address behind one of top teams(at chart) in the CTF game, by redirection of all traffic 
+  with destination to specific ports to another team and from source of our second IP address, then reply to the attacker with return traffic
+  So we can survive behind others patch and have more time to patch our services.
+  In order to use this tools, it needed to DROP the return traffice from our IP by iptables rules.
+
+  #### Usage
+  ```
+  $ git clone git@github.com:afshinpaydar-binary/JSY-ACE.git
+  $ cd JSY-ACE/Redirector
+  $ make
+  $ bin/redirector -h
+    usage: redirector [-h] [-i INTERFACE] [-H HIDE_IP] [-v VICTIM_IP] [-r REDIRECTOR_IP] [-e REDIRECTOR_ETHERNET] [-m MASQUERADE_IP] [-p PORTS]
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    -i INTERFACE, --interface INTERFACE
+                        The interface that redirector listen on it
+    -H HIDE_IP, --hide-ip HIDE_IP
+                        Our IP address that will hide behind Victim address
+    -v VICTIM_IP, --victim-ip VICTIM_IP
+                        Destination victim IP address that traffic route to that
+    -r REDIRECTOR_IP, --redirector-ip REDIRECTOR_IP
+                        Intermediary IP address for redirection usage
+    -e REDIRECTOR_ETHERNET, --redirector-ethernet REDIRECTOR_ETHERNET
+                        Intermediary MAC address for redirection usage
+    -m MASQUERADE_IP, --masquerade-ip MASQUERADE_IP
+                        Masquerade IP address in the CTF game
+    -p PORTS, --ports PORTS
+                        List comma seperated local ports that will hide by redirect traffic to victim (e.g: 10001, 20001)  
+  
+  $ tmux
+  $ ./bin/redirector -i eth0 -H 10.9.3.3 -v 10.9.3.4 -r 172.16.20.3 -e 5e:28:70:8a:b:c6 -m 10.9.3.1 -p 10001,10002,10003,10004
+
+  #### Clean UP
+  ```
+  $ make clean
+  ```
