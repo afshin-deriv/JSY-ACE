@@ -1,4 +1,4 @@
-TARGET = "submit_flag"
+TARGET = "submit_flag_bulk"
 SRC=$(wildcard *.py)
 DST=bin
 
