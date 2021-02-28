@@ -18,6 +18,7 @@ Members:
   ```
   $ git clone git@github.com:afshinpaydar-binary/JSY-ACE.git
   $ cd JSY-ACE/Submit_Flags
+  $ python3 -m pip install -r  requirements.txt
   $ make
   $ bin/submit_flag -h
     Usage: submit_flag [options]
@@ -56,6 +57,7 @@ Members:
   ```
   $ git clone git@github.com:afshinpaydar-binary/JSY-ACE.git
   $ cd JSY-ACE/Redirector
+  $ python3 -m pip install -r  requirements.txt
   $ make
   $ bin/redirector -h
     usage: redirector [-h] [-i TUN_INTERFACE] [-o REAL_INTERFACE] [-H HIDE_IP] [-v VICTIM_IP] [-r REDIRECTOR_IP] [-e REDIRECTOR_ETHERNET] [-m MASQUERADE_IP] [-p PORTS]

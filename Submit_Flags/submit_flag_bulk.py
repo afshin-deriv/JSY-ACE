@@ -26,3 +26,4 @@ if __name__ == "__main__":
 
   for flag in flag_lines:
     print(ctf_game.submit_flag(["{}".format(flag.strip())]))
+

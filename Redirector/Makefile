@@ -6,7 +6,6 @@ all:
 	mkdir $(DST) || true
 	cp $(SRC) $(DST)/$(TARGET)
 	chmod +x  $(DST)/$(TARGET)
-	pip3 install scapy
 %:
 	cp $@.py $@
 	chmod +x $@
